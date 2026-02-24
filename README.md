@@ -16,5 +16,5 @@ Full support for alignment, width, and fill ({:>20H}, {:*^20}, etc.)
 - Custom human-readable duration formatting
 
 Custom specifiers: 
-- From milliseconds -> years.
+- From milliseconds -> [...] -> years.
   - Using corresponding suffix: [ms, s, m, h, d, y]

@@ -12,7 +12,7 @@ BIN_PATH = $(BUILD_DIR)/$(BIN_DIR)
 MAIN_SRC = $(SRC_PATH)/main.cpp
 
 #Include files
-INC = $(INC_PATH)/color_formatter.hpp $(INC_PATH)/duration_formatter.hpp
+INC = $(INC_PATH)/color_formatter.hpp $(INC_PATH)/duration_formatter.hpp $(INC_PATH)/vec_formatter.hpp
 
 #Targets
 TGT_MAIN = formatter

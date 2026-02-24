@@ -66,7 +66,7 @@ struct std::formatter<Color>
         return type_it;  // returning iterator pointing to '}'
     }
 
-    auto format(Color c, std::format_context& ctx) const  // read the interal state at runtime
+    auto format(const Color& c, std::format_context& ctx) const  // read the interal state at runtime
     {
         std::string result;
         if (isHexUpper || isHexLower)
