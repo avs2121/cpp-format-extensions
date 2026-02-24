@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <format>
 
 #include "vector.hpp"
@@ -10,6 +11,10 @@ struct std::formatter<Vector>
    private:
     size_t spec_len{0};
     char spec_buf[32]{};
+    bool isNormal = false;      // [:]
+    bool isColumn = false;      // [:c / C]
+    bool isNormalized = false;  // [:n / N]
+    bool isPolar = false;       // [:p / P]
 
    public:
     constexpr auto parse(std::format_parse_context& ctx)  // parses spec format and stores state
@@ -33,6 +38,21 @@ struct std::formatter<Vector>
         if (ranged_end != it)
         {
             auto last = ranged_end - 1;  // pointing to last character before '}'
+            if (*last == 'c' || *last == 'C')
+            {
+                isColumn = true;
+                ranged_end = last;
+            }
+            if (*last == 'n' || *last == 'N')
+            {
+                isNormalized = true;
+                ranged_end = last;
+            }
+            if (*last == 'p' || *last == 'P')
+            {
+                isPolar = true;
+                ranged_end = last;
+            }
         }
 
         // the range [it, ranged_end] only contains spec parts now.
@@ -50,6 +70,25 @@ struct std::formatter<Vector>
     {
         std::string result;
 
+        if (isColumn)
+        {
+            result = std::format("(\n[{}]\n[{}])", c.x(), c.y());
+        }
+        else if (isNormalized)
+        {
+            auto mag = sqrt(pow(c.x(), 2) + pow(c.y(), 2));
+            result = std::format("({},{})", c.x() / mag, c.y() / mag);
+        }
+        else if (isPolar)
+        {
+            auto mag = sqrt(pow(c.x(), 2) + pow(c.y(), 2));
+            auto angle = atan2(c.y(), c.x());
+            result = std::format("({},{})", mag, angle);
+        }
+        else
+        {
+            result = std::format("({},{})", c.x(), c.y());
+        }
         // reconstruct the format string
         std::string fmt = std::string{"{:" + std::string(spec_buf, spec_len) + "}"};
 
