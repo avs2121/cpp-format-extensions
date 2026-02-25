@@ -1,5 +1,7 @@
 #pragma once
 
+#include <concepts>
+
 /*
 normal vector
 {:}    ->  (1.0, 2.0)
@@ -15,25 +17,28 @@ polar coordinates
 {:p}   ->  (r=2.24, θ=63.4°)
 
 */
+template <typename T>
+concept vector_scalar = std::is_floating_point_v<T> || std::same_as<T, int> || std::same_as<T, long>;
 
+template <vector_scalar T>
 class Vector
 {
    public:
-    Vector(int x, int y) : x_(x), y_(y)
+    Vector(T x, T y) : x_(x), y_(y)
     {
     }
 
-    const int x() const
+    const T x() const
     {
         return x_;
     }
 
-    const int y() const
+    const T y() const
     {
         return y_;
     }
 
    private:
-    int x_;
-    int y_;
+    T x_;
+    T y_;
 };

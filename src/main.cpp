@@ -38,12 +38,12 @@ int main()
     std::cout << std::format("Duration {:y}\n", d);      // year
     std::cout << std::format("Duration {:*^20y}\n", d);  // year with fill
 
-    Vector v(3, 4);
-    std::cout << std::format("Vector: {}\n", v);
-    std::cout << std::format("Vector: {:c}\n", v);
-    std::cout << std::format("Vector: {:C}\n", v);
-    std::cout << std::format("Vector: {:n}\n", v);
-    std::cout << std::format("Vector: {:N}\n", v);
-    std::cout << std::format("Vector: {:p}\n", v);
-    std::cout << std::format("Vector: {:P}\n", v);
+    Vector<int> v(3, 4);
+    std::cout << std::format("Standard vector: {}\n", v);
+    std::cout << std::format("Column vector: {:c}\n", v);
+    std::cout << std::format("Column vector: {:C}\n", v);
+    std::cout << std::format("Normalized vector: {:n}\n", v);
+    std::cout << std::format("Normalized vector: {:N}\n", v);
+    std::cout << std::format("Polar coordinates: {:p}\n", v);
+    std::cout << std::format("Polar coordinates: {:P}\n", v);
 }

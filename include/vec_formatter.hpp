@@ -2,16 +2,16 @@
 
 #include <cmath>
 #include <format>
+#include <numbers>
 
 #include "vector.hpp"
 
-template <>
-struct std::formatter<Vector>
+template <typename T>
+struct std::formatter<Vector<T>>
 {
    private:
     size_t spec_len{0};
     char spec_buf[32]{};
-    bool isNormal = false;      // [:]
     bool isColumn = false;      // [:c / C]
     bool isNormalized = false;  // [:n / N]
     bool isPolar = false;       // [:p / P]
@@ -43,12 +43,12 @@ struct std::formatter<Vector>
                 isColumn = true;
                 ranged_end = last;
             }
-            if (*last == 'n' || *last == 'N')
+            else if (*last == 'n' || *last == 'N')
             {
                 isNormalized = true;
                 ranged_end = last;
             }
-            if (*last == 'p' || *last == 'P')
+            else if (*last == 'p' || *last == 'P')
             {
                 isPolar = true;
                 ranged_end = last;
@@ -66,24 +66,26 @@ struct std::formatter<Vector>
         return type_it;  // returning iterator pointing to '}'
     }
 
-    auto format(const Vector& c, std::format_context& ctx) const  // read the interal state at runtime
+    auto format(const Vector<T>& c, std::format_context& ctx) const  // read the interal state at runtime
     {
         std::string result;
 
         if (isColumn)
         {
-            result = std::format("(\n[{}]\n[{}])", c.x(), c.y());
+            result = std::format("\n([{}]\n[{}])", c.x(), c.y());
         }
         else if (isNormalized)
         {
-            auto mag = sqrt(pow(c.x(), 2) + pow(c.y(), 2));
+            double mag = sqrt(c.x() * c.x() + c.y() * c.y());
             result = std::format("({},{})", c.x() / mag, c.y() / mag);
         }
         else if (isPolar)
         {
-            auto mag = sqrt(pow(c.x(), 2) + pow(c.y(), 2));
-            auto angle = atan2(c.y(), c.x());
-            result = std::format("({},{})", mag, angle);
+            auto mag = sqrt(c.x() * c.x() + c.y() * c.y());
+            // atan2 internally converts int to double, and then convert to degrees
+            auto angle = atan2(c.y(), c.x()) * (180.0 / std::numbers::pi_v<float>);
+
+            result = std::format("({},{} deg)", mag, angle);
         }
         else
         {
