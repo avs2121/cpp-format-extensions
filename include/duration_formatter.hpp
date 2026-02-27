@@ -25,20 +25,20 @@ struct std::formatter<Duration>
    private:
     static void append_unit(std::string& out, bool& started, uint64_t value, const char* suffix)
     {
-        if (value != 0 || started)
+        if (value == 0 && started)
+            return;
+
+        if (strcmp(suffix, "ms") == 0)
         {
-            if (strcmp(suffix, "ms") == 0)
+            if (value > 0)
             {
-                if (value > 0)
-                {
-                    out += std::format("{}{}", value, suffix);
-                }
+                out += std::format("{}{}", value, suffix);
             }
-            else
-            {
-                out += std::format("{}{} ", value, suffix);
-                started = true;
-            }
+        }
+        else
+        {
+            out += std::format("{}{} ", value, suffix);
+            started = true;
         }
     }
 

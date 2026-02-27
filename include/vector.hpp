@@ -16,6 +16,14 @@ normalized vector
 polar coordinates
 {:p}   ->  (r=2.24, θ=63.4°)
 
+Right now Vector only handles 2D. A natural extension is adding z() and updating the formatter to handle:
+
+3D default output (x, y, z)
+3D normalized
+Spherical coordinates {:p} → (r, θ, φ)
+
+This would demonstrate a partial specialization difference between Vector<T> in 2D vs 3D, which is a good C++ concept to show.
+
 */
 template <typename T>
 concept vector_scalar = std::is_floating_point_v<T> || std::same_as<T, int> || std::same_as<T, long>;

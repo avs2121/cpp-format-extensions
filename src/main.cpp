@@ -38,6 +38,9 @@ int main()
     std::cout << std::format("Duration {:y}\n", d);      // year
     std::cout << std::format("Duration {:*^20y}\n", d);  // year with fill
 
+    Duration d_test_trailing_zeroes(3600000ULL * 24 * 365);  // exactly 1 year in ms
+    std::cout << std::format("Duration trailing zeroes {}\n", d_test_trailing_zeroes);
+
     Vector<int> v(3, 4);
     std::cout << std::format("Standard vector: {}\n", v);
     std::cout << std::format("Column vector: {:c}\n", v);
