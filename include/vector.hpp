@@ -28,12 +28,12 @@ class Vector
     {
     }
 
-    const T x() const
+    T x() const
     {
         return x_;
     }
 
-    const T y() const
+    T y() const
     {
         return y_;
     }

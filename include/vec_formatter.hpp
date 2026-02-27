@@ -16,7 +16,7 @@ struct std::formatter<Vector<T>>
     bool isNormalized = false;    // [:n / N]
     bool isPolar = false;         // [:p / P] - defaults to degrees, if no specification provided
     bool isPolarRadians = false;  // [:pR / pr / PR / Pr]
-    bool isPolarDegrees = false;  // [:pD / pd / PD / Pd]
+                                  // Degree output will be [:pD / pd / PD / Pd]
 
    public:
     constexpr auto parse(std::format_parse_context& ctx)
@@ -66,7 +66,6 @@ struct std::formatter<Vector<T>>
                 if (*last == 'd' || *last == 'D')
                 {
                     isPolar = true;
-                    isPolarDegrees = true;
                     ranged_end = last - 1;
                 }
             }
@@ -81,33 +80,33 @@ struct std::formatter<Vector<T>>
         return type_it;
     }
 
-    auto format(const Vector<T>& c, std::format_context& ctx) const  // read the interal state at runtime
+    auto format(const Vector<T>& v, std::format_context& ctx) const  // read the interal state at runtime
     {
         std::string result;
 
         if (isColumn)
         {
-            result = std::format("\n([{}]\n[{}])", c.x(), c.y());
+            result = std::format("\n([{}]\n[{}])", v.x(), v.y());
         }
         else if (isNormalized)
         {
-            double mag = std::sqrt(c.x() * c.x() + c.y() * c.y());
-            result = std::format("({},{})", c.x() / mag, c.y() / mag);
+            double mag = std::sqrt(v.x() * v.x() + v.y() * v.y());
+            result = std::format("({},{})", v.x() / mag, v.y() / mag);
         }
         else if (isPolar)
         {
-            auto mag = std::sqrt(c.x() * c.x() + c.y() * c.y());
+            auto mag = std::sqrt(v.x() * v.x() + v.y() * v.y());
             // atan2 internally converts int to double, and then convert to degrees
             double angle{0};
             bool degrees = true;
             if (isPolarRadians)
             {
-                angle = std::atan2(c.y(), c.x());
+                angle = std::atan2(v.y(), v.x());
                 degrees = false;
             }
             else
             {
-                angle = std::atan2(c.y(), c.x()) * (180.0 / std::numbers::pi_v<double>);
+                angle = std::atan2(v.y(), v.x()) * (180.0 / std::numbers::pi_v<double>);
             }
 
             result = std::format("({},{} {})", mag, angle, degrees ? "deg" : "rad");
@@ -115,7 +114,7 @@ struct std::formatter<Vector<T>>
 
         else
         {
-            result = std::format("({},{})", c.x(), c.y());
+            result = std::format("({},{})", v.x(), v.y());
         }
 
         std::string fmt = std::string{"{:" + std::string(spec_buf, spec_len) + "}"};

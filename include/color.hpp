@@ -9,15 +9,15 @@ class Color
     {
     }
 
-    const uint8_t r() const
+    uint8_t r() const
     {
         return r_;
     }
-    const uint8_t g() const
+    uint8_t g() const
     {
         return g_;
     }
-    const uint8_t b() const
+    uint8_t b() const
     {
         return b_;
     }

@@ -14,31 +14,31 @@ class Duration
     Duration(uint64_t ms) : ms_(ms)
     {
     }
-    const uint64_t ms() const
+    uint64_t ms() const
     {
         return ms_;
     }
 
-    const uint64_t s() const
+    uint64_t s() const
     {
         return ms_ / MS_PER_SECOND;
     }
 
-    const uint64_t m() const
+    uint64_t m() const
     {
         return ms_ / MS_PER_MINUTE;
     }
 
-    const uint64_t h() const
+    uint64_t h() const
     {
         return ms_ / MS_PER_HOUR;
     }
 
-    const uint64_t d() const
+    uint64_t d() const
     {
         return ms_ / MS_PER_DAY;
     }
-    const uint64_t y() const
+    uint64_t y() const
     {
         return ms_ / MS_PER_YEAR;
     }
