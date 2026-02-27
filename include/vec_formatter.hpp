@@ -12,9 +12,11 @@ struct std::formatter<Vector<T>>
    private:
     size_t spec_len{0};
     char spec_buf[32]{};
-    bool isColumn = false;      // [:c / C]
-    bool isNormalized = false;  // [:n / N]
-    bool isPolar = false;       // [:p / P] - add specified output to rad or deg
+    bool isColumn = false;        // [:c / C]
+    bool isNormalized = false;    // [:n / N]
+    bool isPolar = false;         // [:p / P] - defaults to degrees, if no specification provided
+    bool isPolarRadians = false;  // [:pR / pr / PR / Pr]
+    bool isPolarDegrees = false;  // [:pD / pd / PD / Pd]
 
    public:
     constexpr auto parse(std::format_parse_context& ctx)
@@ -53,6 +55,21 @@ struct std::formatter<Vector<T>>
                 isPolar = true;
                 ranged_end = last;
             }
+            else if (ranged_end - it >= 2 && (*(last - 1) == 'p' || *(last - 1) == 'P'))
+            {
+                if (*last == 'r' || *last == 'R')
+                {
+                    isPolar = true;
+                    isPolarRadians = true;
+                    ranged_end = last - 1;
+                }
+                if (*last == 'd' || *last == 'D')
+                {
+                    isPolar = true;
+                    isPolarDegrees = true;
+                    ranged_end = last - 1;
+                }
+            }
         }
 
         spec_len = 0;
@@ -81,10 +98,21 @@ struct std::formatter<Vector<T>>
         {
             auto mag = std::sqrt(c.x() * c.x() + c.y() * c.y());
             // atan2 internally converts int to double, and then convert to degrees
-            auto angle = std::atan2(c.y(), c.x()) * (180.0 / std::numbers::pi_v<double>);
+            double angle{0};
+            bool degrees = true;
+            if (isPolarRadians)
+            {
+                angle = std::atan2(c.y(), c.x());
+                degrees = false;
+            }
+            else
+            {
+                angle = std::atan2(c.y(), c.x()) * (180.0 / std::numbers::pi_v<double>);
+            }
 
-            result = std::format("({},{} deg)", mag, angle);
+            result = std::format("({},{} {})", mag, angle, degrees ? "deg" : "rad");
         }
+
         else
         {
             result = std::format("({},{})", c.x(), c.y());

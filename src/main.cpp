@@ -46,4 +46,8 @@ int main()
     std::cout << std::format("Normalized vector: {:N}\n", v);
     std::cout << std::format("Polar coordinates: {:p}\n", v);
     std::cout << std::format("Polar coordinates: {:P}\n", v);
+    std::cout << std::format("Polar coordinates: {:Pr}\n", v);
+    std::cout << std::format("Polar coordinates: {:PR}\n", v);
+    std::cout << std::format("Polar coordinates: {:Pd}\n", v);
+    std::cout << std::format("Polar coordinates: {:PD}\n", v);
 }
