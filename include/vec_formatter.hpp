@@ -6,8 +6,8 @@
 
 #include "vector.hpp"
 
-template <typename T>
-struct std::formatter<Vector<T>>
+template <vector_scalar... Args>
+struct std::formatter<Vector<Args...>>
 {
    private:
     size_t spec_len{0};
@@ -80,8 +80,9 @@ struct std::formatter<Vector<T>>
         return type_it;
     }
 
-    auto format(const Vector<T>& v, std::format_context& ctx) const  // read the interal state at runtime
+    auto format(const Vector<Args...>& v, std::format_context& ctx) const  // read the interal state at runtime
     {
+        static constexpr bool is3dVec = (decltype(v)::dimension == 3);
         std::string result;
 
         if (isColumn)
@@ -113,8 +114,8 @@ struct std::formatter<Vector<T>>
         }
 
         else
-        {
-            result = std::format("({},{})", v.x(), v.y());
+        {  // convert to fold expression / std::apply
+            result = std::format("({},{},{})", v.x(), v.y(), is3dVec ? v.z() : -1);
         }
 
         std::string fmt = std::string{"{:" + std::string(spec_buf, spec_len) + "}"};

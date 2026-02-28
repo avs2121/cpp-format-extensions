@@ -32,6 +32,8 @@ template <vector_scalar... Args>
 class Vector
 {
    public:
+    static constexpr std::size_t dimension = sizeof...(Args);
+
     Vector(Args... args) : data(args...)
     {
     }
