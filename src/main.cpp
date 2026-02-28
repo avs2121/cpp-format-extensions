@@ -42,7 +42,7 @@ int main()
     std::cout << std::format("Duration trailing zeroes {}\n", d_test_trailing_zeroes);
 
     Vector<int, int> v2d(3, 4);
-    std::cout << std::format("Standard vector: {}\n", v2d);
+    std::cout << std::format("Standard 2d vector: {}\n", v2d);
     std::cout << std::format("Column vector: {:c}\n", v2d);
     std::cout << std::format("Column vector: {:C}\n", v2d);
     std::cout << std::format("Normalized vector: {:n}\n", v2d);
@@ -55,5 +55,5 @@ int main()
     std::cout << std::format("Polar coordinates: {:PD}\n", v2d);
 
     Vector<int, int, int> v3d(3, 4, 5);
-    std::cout << std::format("Standard vector: {}\n", v3d);
+    std::cout << std::format("Standard 3d vector: {}\n", v3d);
 }

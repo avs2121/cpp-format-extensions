@@ -39,21 +39,21 @@ class Vector
     }
 
     auto x() const
-        requires(std::tuple_size_v<std::tuple<Args...>> == 1)
+        requires(std::tuple_size_v<std::tuple<Args...>> >= 1)
 
     {
         return std::get<0>(data);
     }
 
     auto y() const
-        requires(std::tuple_size_v<std::tuple<Args...>> == 2)
+        requires(std::tuple_size_v<std::tuple<Args...>> >= 2)
 
     {
         return std::get<1>(data);
     }
 
     auto z() const
-        requires(std::tuple_size_v<std::tuple<Args...>> == 3)
+        requires(std::tuple_size_v<std::tuple<Args...>> >= 3)
     {
         return std::get<2>(data);
     }

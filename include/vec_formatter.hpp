@@ -82,7 +82,6 @@ struct std::formatter<Vector<Args...>>
 
     auto format(const Vector<Args...>& v, std::format_context& ctx) const  // read the interal state at runtime
     {
-        static constexpr bool is3dVec = (decltype(v)::dimension == 3);
         std::string result;
 
         if (isColumn)
@@ -114,8 +113,15 @@ struct std::formatter<Vector<Args...>>
         }
 
         else
-        {  // convert to fold expression / std::apply
-            result = std::format("({},{},{})", v.x(), v.y(), is3dVec ? v.z() : -1);
+        {
+            if constexpr (Vector<Args...>::dimension == 3)
+            {
+                result = std::format("({},{},{})", v.x(), v.y(), v.z());
+            }
+            else if constexpr (Vector<Args...>::dimension == 2)
+            {
+                result = std::format("({},{})", v.x(), v.y());
+            }
         }
 
         std::string fmt = std::string{"{:" + std::string(spec_buf, spec_len) + "}"};
