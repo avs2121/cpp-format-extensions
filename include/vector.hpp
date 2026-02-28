@@ -1,8 +1,10 @@
 #pragma once
-
 #include <concepts>
+#include <tuple>
 
 /*
+2D :
+
 normal vector
 {:}    ->  (1.0, 2.0)
 
@@ -16,37 +18,44 @@ normalized vector
 polar coordinates
 {:p}   ->  (r=2.24, θ=63.4°)
 
-Right now Vector only handles 2D. A natural extension is adding z() and updating the formatter to handle:
+3D :
 
-3D default output (x, y, z)
-3D normalized
+default output (x, y, z)
+normalized
 Spherical coordinates {:p} → (r, θ, φ)
-
-This would demonstrate a partial specialization difference between Vector<T> in 2D vs 3D, which is a good C++ concept to show.
 
 */
 template <typename T>
 concept vector_scalar = std::is_floating_point_v<T> || std::same_as<T, int> || std::same_as<T, long>;
 
-template <vector_scalar T>
+template <vector_scalar... Args>
 class Vector
 {
    public:
-    Vector(T x, T y) : x_(x), y_(y)
+    Vector(Args... args) : data(args...)
     {
     }
 
-    T x() const
+    auto x() const
+        requires(std::tuple_size_v<std::tuple<Args...>> == 1)
+
     {
-        return x_;
+        return std::get<0>(data);
     }
 
-    T y() const
+    auto y() const
+        requires(std::tuple_size_v<std::tuple<Args...>> == 2)
+
     {
-        return y_;
+        return std::get<1>(data);
+    }
+
+    auto z() const
+        requires(std::tuple_size_v<std::tuple<Args...>> == 3)
+    {
+        return std::get<2>(data);
     }
 
    private:
-    T x_;
-    T y_;
+    std::tuple<Args...> data;
 };
