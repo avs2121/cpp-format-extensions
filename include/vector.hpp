@@ -25,10 +25,17 @@ normalized
 Spherical coordinates {:p} → (r, θ, φ)
 
 */
+
+// Concept constraining T to either a floating point type, int, or long.
 template <typename T>
 concept vector_scalar = std::is_floating_point_v<T> || std::same_as<T, int> || std::same_as<T, long>;
 
+// variadic template: accepts any number of Args, each must satisfy vector_scalar.
+// requires clause: fold expression using && over the pack, ensuring every Arg is the
+// same type as the first Arg (tuple_element_t<0>), preventing mixed types like <int, double>.
 template <vector_scalar... Args>
+    requires(std::is_same_v<std::tuple_element_t<0, std::tuple<Args...>>, Args> && ...)
+
 class Vector
 {
    public:
@@ -39,7 +46,7 @@ class Vector
     }
 
     auto x() const
-        requires(std::tuple_size_v<std::tuple<Args...>> >= 1)  // could also use requires(sizeof...(Args) >= 1)
+        requires(std::tuple_size_v<std::tuple<Args...>> >= 1)  // could also use (sizeof...(Args) >= 1)
 
     {
         return std::get<0>(data);
