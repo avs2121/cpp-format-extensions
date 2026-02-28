@@ -41,16 +41,23 @@ int main()
     Duration d_test_trailing_zeroes(3600000ULL * 24 * 365);  // exactly 1 year in ms
     std::cout << std::format("Duration trailing zeroes {}\n", d_test_trailing_zeroes);
 
-    Vector<int> v(3, 4);
-    std::cout << std::format("Standard vector: {}\n", v);
-    std::cout << std::format("Column vector: {:c}\n", v);
-    std::cout << std::format("Column vector: {:C}\n", v);
-    std::cout << std::format("Normalized vector: {:n}\n", v);
-    std::cout << std::format("Normalized vector: {:N}\n", v);
-    std::cout << std::format("Polar coordinates: {:p}\n", v);
-    std::cout << std::format("Polar coordinates: {:P}\n", v);
-    std::cout << std::format("Polar coordinates: {:Pr}\n", v);
-    std::cout << std::format("Polar coordinates: {:PR}\n", v);
-    std::cout << std::format("Polar coordinates: {:Pd}\n", v);
-    std::cout << std::format("Polar coordinates: {:PD}\n", v);
+    Vector<int, int> v2d(3, 4);
+    std::cout << std::format("Standard 2d vector: {}\n", v2d);
+    std::cout << std::format("Column vector: {:c}\n", v2d);
+    std::cout << std::format("Column vector: {:C}\n", v2d);
+    std::cout << std::format("Normalized vector: {:n}\n", v2d);
+    std::cout << std::format("Normalized vector: {:N}\n", v2d);
+    std::cout << std::format("Polar coordinates: {:p}\n", v2d);
+    std::cout << std::format("Polar coordinates: {:P}\n", v2d);
+    std::cout << std::format("Polar coordinates: {:Pr}\n", v2d);
+    std::cout << std::format("Polar coordinates: {:PR}\n", v2d);
+    std::cout << std::format("Polar coordinates: {:Pd}\n", v2d);
+    std::cout << std::format("Polar coordinates: {:PD}\n", v2d);
+
+    Vector<int, int, int> v3d(3, 4, 5);
+    std::cout << std::format("Standard 3d vector: {}\n", v3d);
+    std::cout << std::format("Column 3d vector: {:c}\n", v3d);
+    std::cout << std::format("Normalized 3d vector: {:n}\n", v3d);
+    std::cout << std::format("Normalized 3d vector: {:s}\n", v3d);
+    std::cout << std::format("Normalized 3d vector: {:sr}\n", v3d);
 }
