@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <cmath>
 #include <format>
 #include <numbers>
@@ -122,12 +123,14 @@ struct std::formatter<Vector<Args...>>
         {
             if constexpr (Vector<Args...>::dimension == 3)
             {
-                double mag = std::sqrt(v.x() * v.x() + v.y() * v.y() + v.z() * v.z());
+                double mag = std::hypot(static_cast<double>(v.x()), static_cast<double>(v.y()), static_cast<double>(v.z()));
+                assert(mag != 0);  // assert mag is not 0, because divison with 0 will happen later then.
                 result = std::format("({},{},{})", v.x() / mag, v.y() / mag, v.z() / mag);
             }
             else if constexpr (Vector<Args...>::dimension == 2)
             {
-                double mag = std::sqrt(v.x() * v.x() + v.y() * v.y());
+                double mag = std::hypot(static_cast<double>(v.x()), static_cast<double>(v.y()));
+                assert(mag != 0);  // assert mag is not 0, because divison with 0 will happen later then.
                 result = std::format("({},{})", v.x() / mag, v.y() / mag);
             }
         }
@@ -135,7 +138,7 @@ struct std::formatter<Vector<Args...>>
         {
             if constexpr (Vector<Args...>::dimension == 2)
             {
-                auto mag = std::sqrt(v.x() * v.x() + v.y() * v.y());
+                double mag = std::hypot(static_cast<double>(v.x()), static_cast<double>(v.y()));
                 // atan2 internally converts int to double, and then convert to degrees
                 double angle{0};
                 bool isDegrees = true;
@@ -153,7 +156,9 @@ struct std::formatter<Vector<Args...>>
             }
             else if constexpr (Vector<Args...>::dimension == 3)
             {
-                auto radial_dis = std::sqrt(v.x() * v.x() + v.y() * v.y() + v.z() * v.z());
+                double radial_dis = std::hypot(static_cast<double>(v.x()), static_cast<double>(v.y()), static_cast<double>(v.z()));
+                assert(radial_dis != 0);  // assert radial_dis is not 0, because divison with 0 will happen later then.
+
                 double polar_angle{0};
                 double azimuth_angle{0};
                 bool isDegrees = true;
