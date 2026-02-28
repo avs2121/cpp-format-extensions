@@ -86,12 +86,28 @@ struct std::formatter<Vector<Args...>>
 
         if (isColumn)
         {
-            result = std::format("\n([{}]\n[{}])", v.x(), v.y());
+            std::apply(
+                [&result](const auto& first, const auto&... restArgs)
+                {
+                    result += "(";
+                    result += std::format("[{}]", first);
+                    ((result += std::format("\n[{}]", restArgs)), ...);  // pack expansion
+                    result += ")";
+                },
+                v.as_tuple());
         }
         else if (isNormalized)
         {
-            double mag = std::sqrt(v.x() * v.x() + v.y() * v.y());
-            result = std::format("({},{})", v.x() / mag, v.y() / mag);
+            if constexpr (Vector<Args...>::dimension == 3)
+            {
+                double mag = std::sqrt(v.x() * v.x() + v.y() * v.y() + v.z() * v.z());
+                result = std::format("({},{},{})", v.x() / mag, v.y() / mag, v.z() / mag);
+            }
+            else if constexpr (Vector<Args...>::dimension == 2)
+            {
+                double mag = std::sqrt(v.x() * v.x() + v.y() * v.y());
+                result = std::format("({},{})", v.x() / mag, v.y() / mag);
+            }
         }
         else if (isPolar)
         {
@@ -111,7 +127,6 @@ struct std::formatter<Vector<Args...>>
 
             result = std::format("({},{} {})", mag, angle, degrees ? "deg" : "rad");
         }
-
         else
         {
             if constexpr (Vector<Args...>::dimension == 3)

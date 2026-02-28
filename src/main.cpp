@@ -56,4 +56,5 @@ int main()
 
     Vector<int, int, int> v3d(3, 4, 5);
     std::cout << std::format("Standard 3d vector: {}\n", v3d);
+    std::cout << std::format("Column 3d vector: {:c}\n", v3d);
 }

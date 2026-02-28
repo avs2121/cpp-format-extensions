@@ -58,6 +58,11 @@ class Vector
         return std::get<2>(data);
     }
 
+    const auto& as_tuple() const
+    {
+        return data;
+    }
+
    private:
     std::tuple<Args...> data;
 };
