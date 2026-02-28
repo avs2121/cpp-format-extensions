@@ -12,11 +12,14 @@ struct std::formatter<Vector<Args...>>
    private:
     size_t spec_len{0};
     char spec_buf[32]{};
-    bool isColumn = false;        // [:c / C]
-    bool isNormalized = false;    // [:n / N]
-    bool isPolar = false;         // [:p / P] - defaults to degrees, if no specification provided
-    bool isPolarRadians = false;  // [:pR / pr / PR / Pr]
-                                  // Degree output will be [:pD / pd / PD / Pd]
+    bool isColumn = false;            // [:c / C]
+    bool isNormalized = false;        // [:n / N]
+    bool isSpherical = false;         // [:s / S] - coordinates for 3d vector
+    bool isPolar = false;             // [:p / P] - defaults to degrees, if no specification provided
+    bool isPolarRadians = false;      // [:pR / pr / PR / Pr]
+    bool isSphericalRadians = false;  // [:sR / sr / SR / Sr]
+                                      // Degree output will be for polar [:pD / pd / PD / Pd]
+                                      // Degree output will be for spherical [:sD / sd / sD / sd]
 
    public:
     constexpr auto parse(std::format_parse_context& ctx)
@@ -55,6 +58,11 @@ struct std::formatter<Vector<Args...>>
                 isPolar = true;
                 ranged_end = last;
             }
+            else if (*last == 's' || *last == 'S')
+            {
+                isSpherical = true;
+                ranged_end = last;
+            }
             else if (ranged_end - it >= 2 && (*(last - 1) == 'p' || *(last - 1) == 'P'))
             {
                 if (*last == 'r' || *last == 'R')
@@ -66,6 +74,20 @@ struct std::formatter<Vector<Args...>>
                 if (*last == 'd' || *last == 'D')
                 {
                     isPolar = true;
+                    ranged_end = last - 1;
+                }
+            }
+            else if (ranged_end - it >= 2 && (*(last - 1) == 's' || *(last - 1) == 'S'))
+            {
+                if (*last == 'r' || *last == 'R')
+                {
+                    isSpherical = true;
+                    isSphericalRadians = true;
+                    ranged_end = last - 1;
+                }
+                if (*last == 'd' || *last == 'D')
+                {
+                    isSpherical = true;
                     ranged_end = last - 1;
                 }
             }
@@ -109,23 +131,45 @@ struct std::formatter<Vector<Args...>>
                 result = std::format("({},{})", v.x() / mag, v.y() / mag);
             }
         }
-        else if (isPolar)
+        else if (isPolar || isSpherical)
         {
-            auto mag = std::sqrt(v.x() * v.x() + v.y() * v.y());
-            // atan2 internally converts int to double, and then convert to degrees
-            double angle{0};
-            bool degrees = true;
-            if (isPolarRadians)
+            if constexpr (Vector<Args...>::dimension == 2)
             {
-                angle = std::atan2(v.y(), v.x());
-                degrees = false;
-            }
-            else
-            {
-                angle = std::atan2(v.y(), v.x()) * (180.0 / std::numbers::pi_v<double>);
-            }
+                auto mag = std::sqrt(v.x() * v.x() + v.y() * v.y());
+                // atan2 internally converts int to double, and then convert to degrees
+                double angle{0};
+                bool isDegrees = true;
+                if (isPolarRadians)
+                {
+                    angle = std::atan2(v.y(), v.x());
+                    isDegrees = false;
+                }
+                else
+                {
+                    angle = std::atan2(v.y(), v.x()) * (180.0 / std::numbers::pi_v<double>);
+                }
 
-            result = std::format("({},{} {})", mag, angle, degrees ? "deg" : "rad");
+                result = std::format("({} mag, {} {})", mag, angle, isDegrees ? "deg" : "rad");
+            }
+            else if constexpr (Vector<Args...>::dimension == 3)
+            {
+                auto radial_dis = std::sqrt(v.x() * v.x() + v.y() * v.y() + v.z() * v.z());
+                double polar_angle{0};
+                double azimuth_angle{0};
+                bool isDegrees = true;
+                if (isSphericalRadians)
+                {
+                    isDegrees = false;
+                    polar_angle = std::acos(v.z() / radial_dis);
+                    azimuth_angle = std::atan2(v.y(), v.x());
+                }
+                else
+                {
+                    polar_angle = std::acos(v.z() / radial_dis) * (180.0 / std::numbers::pi_v<double>);
+                    azimuth_angle = std::atan2(v.y(), v.x()) * (180.0 / std::numbers::pi_v<double>);
+                }
+                result = std::format("({0} dist, {1} {3}, {2} {3})", radial_dis, azimuth_angle, polar_angle, isDegrees ? "deg" : "rad");
+            }
         }
         else
         {
