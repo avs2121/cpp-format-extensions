@@ -72,7 +72,7 @@ struct std::formatter<Vector<Args...>>
                     isPolarRadians = true;
                     ranged_end = last - 1;
                 }
-                if (*last == 'd' || *last == 'D')
+                else if (*last == 'd' || *last == 'D')
                 {
                     isPolar = true;
                     ranged_end = last - 1;
@@ -86,7 +86,7 @@ struct std::formatter<Vector<Args...>>
                     isSphericalRadians = true;
                     ranged_end = last - 1;
                 }
-                if (*last == 'd' || *last == 'D')
+                else if (*last == 'd' || *last == 'D')
                 {
                     isSpherical = true;
                     ranged_end = last - 1;

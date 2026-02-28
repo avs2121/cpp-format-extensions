@@ -39,7 +39,7 @@ class Vector
     }
 
     auto x() const
-        requires(std::tuple_size_v<std::tuple<Args...>> >= 1)
+        requires(std::tuple_size_v<std::tuple<Args...>> >= 1)  // could also use requires(sizeof...(Args) >= 1)
 
     {
         return std::get<0>(data);
