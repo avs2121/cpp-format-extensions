@@ -32,14 +32,21 @@ Types of specifiers:
 - {:y} => year format
 
 ### Vector
-Formats a 2D `Vector<T>` where `T` is `int`, `long`, or a floating point type.
+Formats a `Vector<T, ...>` where `T` is `int`, `long`, or a floating point type.
+Supports both 2D and 3D vectors.
 
-Types of specifiers: 
+Types of specifiers for 2D vector: 
 - {} => standard vector 
 - {:c} => column vector
 - {:n} => normalized vector
 - {:p} => polar coordinates for vector in degrees
-  - {:pD} / {:pd} => specify polar coordinates in degrees
+  - {:pD} / {:pd} => polar coordinates explicitly in degrees
 - {:pR} / {:pr} => polar coordinates for vector in radians
 
-
+ Types of specifiers for 3D vectors:
+- {}       => standard 3D vector (x, y, z)
+- {:c}     => column vector ([x]\n[y]\n[z])
+- {:n}     => normalized vector ((x/mag, y/mag, z/mag))
+- {:s}     => spherical coordinates in degrees
+  - {:sD} / {:sd} => spherical coordinates explicitly in degrees
+- {:sR} / {:sr} => spherical coordinates in radians
